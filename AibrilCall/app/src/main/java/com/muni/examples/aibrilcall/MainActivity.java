@@ -1,5 +1,7 @@
 package com.muni.examples.aibrilcall;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,10 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private static PopupMenu.OnMenuItemClickListener onMenuItemClickListener;
-    private static FloatingActionButton fab;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -24,12 +29,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         onMenuItemClickListener = new PopupMenu.OnMenuItemClickListener() { // 팝업메뉴아이템 클릭리스너 생성
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch( item.getItemId() ){//눌러진 MenuItem의 Item Id를 얻어와 식별
                     case R.id.load_call: //통화 불러오기
-                        Toast.makeText(MainActivity.this, "통화 불러오기", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "통화 불러오기", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(
+                                getApplicationContext(), // 현재 화면의 제어권자
+                                CallList.class); // 다음 넘어갈 클래스 지정
+                        startActivity(intent); // 다음 화면으로 넘어간다
+
                         break;
                     case R.id.exit: //앱 종료
                         int pid = android.os.Process.myPid();
@@ -57,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         // popup.show(view); //Popup Menu 보이기
         popup.show(); //Popup Menu 보이기
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
