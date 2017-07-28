@@ -1,20 +1,27 @@
 package com.muni.examples.aibrilcall;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class CallActivity extends AppCompatActivity implements View.OnClickListener {
@@ -24,6 +31,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
     private TextView title;
     private ImageView previous,play,pause,next;
     private SeekBar seekBar;
+    private Button select;
     boolean isPlaying = true;
     private ContentResolver res;
     private ProgressUpdate progressUpdate;
@@ -38,6 +46,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         title = (TextView)findViewById(R.id.title);
         seekBar = (SeekBar)findViewById(R.id.seekbar);
 
+
         position = intent.getIntExtra("position",0);
         list = (ArrayList<CallDto>) intent.getSerializableExtra("playlist");
         res = getContentResolver();
@@ -46,11 +55,13 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         play = (ImageView)findViewById(R.id.play);
         pause = (ImageView)findViewById(R.id.pause);
         next = (ImageView)findViewById(R.id.next);
+        select = (Button)findViewById(R.id.select);
 
         previous.setOnClickListener(this);
         play.setOnClickListener(this);
         pause.setOnClickListener(this);
         next.setOnClickListener(this);
+        select.setOnClickListener(this);
 
         playCall(list.get(position));
         progressUpdate = new ProgressUpdate();
@@ -112,24 +123,6 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //앨범이 저장되어 있는 경로를 리턴합니다.
-    private static String getCoverArtPath(long albumId, Context context) {
-
-        Cursor albumCursor = context.getContentResolver().query(
-                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Audio.Albums.ALBUM_ART},
-                MediaStore.Audio.Albums._ID + " = ?",
-                new String[]{Long.toString(albumId)},
-                null
-        );
-        boolean queryResult = albumCursor.moveToFirst();
-        String result = null;
-        if (queryResult) {
-            result = albumCursor.getString(0);
-        }
-        albumCursor.close();
-        return result;
-    }
 
     @Override
     public void onClick(View v) {
@@ -161,6 +154,17 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 break;
+            case R.id.select:
+                String serverURL = "http://192.168.1.100/sample.php";
+                String sampleData= (String) getText(R.string.app_name);
+                SendOperation send = new SendOperation();
+                send.setSelected_sites_id(sampleData);
+                send.execute(serverURL);
+
+                Intent intent = new Intent(
+                        getApplicationContext(),
+                        MainActivity.class);
+                startActivity(intent);
         }
     }
 
@@ -178,6 +182,78 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
                     Log.e("ProgressUpdate",e.getMessage());
                 }
 
+            }
+        }
+    }
+
+    //
+    private class SendOperation  extends AsyncTask<String, Void, Void> {
+
+        // 초기화 필요
+        //이 클래스에서는 HttpClient 가 아닌 123라인에서 HttpURLConnection 객체(오브젝트)를 사용합니다.
+        //private final HttpClient Client = new DefaultHttpClient();//아파치서버클래스에서 변수를 전역으로 사용하기 위해서 final 선언하면서 오브젝트 생성
+        private String Error = null;
+        private ProgressDialog Dialog= new ProgressDialog(CallActivity.this);//현재  클래스에 Dialog 변수선언
+        String send_data="";
+        String sample_data="";
+        public void setSelected_sites_id(String str){
+            sample_data=str;
+        }
+
+        protected void onPreExecute() {
+            Dialog.setMessage("잠시만 기다려 주세요..");
+            Dialog.show();
+
+            try{
+                // 요청 파라미터 설정
+
+                //selected_sites+=selected_sites_id;
+                send_data +="&" + URLEncoder.encode("selected_sites", "UTF-8") + "="+sample_data;
+                //selected_sites +="&" + URLEncoder.encode("data", "UTF-8") + "= data";
+
+            } catch (UnsupportedEncodingException e) {
+                // 에러 표시
+                e.printStackTrace();
+            }
+
+        }
+        // onPreExecute 메소드 이후 호출
+        protected Void doInBackground(String... urls) {//클릭이벤트 실행시 파라미터값 urls= LongOperation().execute(serverURL);
+            BufferedReader reader=null;
+            // 데이터 전송
+            try
+            {
+                // Lab code here....
+                //Data를 보낼 URL =
+                URL url=new URL(urls[0]);
+                //POST data 요청사항을 OutputStreamWriter 를 이용하여 전송
+                URLConnection conn=url.openConnection();
+                conn.setDoOutput(true);
+                OutputStreamWriter wr=new OutputStreamWriter(conn.getOutputStream());
+
+                wr.write(send_data);//onPreExecute 메소드의 data 변수의 파라미터 내용을 POST 전송명령
+                wr.flush();//OutputStreamWriter 버퍼 메모리 비우기
+            }
+            catch(Exception ex)
+            {
+                Error = ex.getMessage();
+            }
+            finally
+            {
+                try
+                {
+                    reader.close();
+                }
+                catch(Exception ex) {}
+            }
+            /*****************************************************/
+            return null;
+        }
+        //doInBackground POST전송 후 자동실행 코드
+        protected void onPostExecute(Void unused) {
+            Dialog.dismiss(); //"잠시만 기다려 주세요.. 다이알로그 메세지 창 종료
+            if (Error != null) {
+            } else {
             }
         }
     }

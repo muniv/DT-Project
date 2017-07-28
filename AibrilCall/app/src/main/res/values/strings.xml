@@ -2,4 +2,8 @@
     <string name="app_name">AibrilCall</string>
     <string name="action_settings">Settings</string>
     <string name="loaded_call_list_empty">현재 첨부된 통화 목록이 없습니다. \n하단 \'+\'버튼을 눌러주세요!</string>
+
+    <string name="sample_data">SK주식회사 C&amp;C는 곧바로 인공지능 서비스 브랜드로 ‘에이브릴(Aibril)’을 런칭했다. 에이브릴(Aibril)은 인공지능을 뜻하는 AI와 ‘우수한’ ‘눈부신’을 의미하는 Brilliant의 합성어다. 4월을 의미하는 프랑스어의 Avril, 스페인어의 Abril와 동음어이기도 하다. 만물이 활짝 피어나는 4월과 같이 AI 기반 데이터 서비스 사업이 만개한다는 기대와 희망을 담고 있다.
+        ‘정보’와 ‘지식’을 중심으로 모든 시스템이 재편되는 4차 산업혁명이 본격화되면서 다양한 산업 군에서 AI를 기반으로 한 서비스 경쟁력 강화가 전세계적 화두다. AI의 적용은 이미 여러 산업 분야와 업무 단계에서 이뤄지고 있다. 프로세스 표준화 어드바이징을 통한 비용절감, 방대한 전문지식 기반 서비스 차별화, 가상비서, 자동화 영역 확대를 통한 생활 및 업무 효율 향상, 단순 기능 업무 대체, 데이터 기반 신규 직업군 등장이 산업구조의 큰 틀을 변화시키고 있다.
+    </string>
 </resources>
