@@ -20,7 +20,7 @@ public class CallData {
     public void setData(String str){
         data=str;
     }
-    public void setOpponentNumber(String str) {data=str;}
+    public void setOpponentNumber(String str) {opponentNumber=str;}
 
     public String getNumber() {
         return number;
