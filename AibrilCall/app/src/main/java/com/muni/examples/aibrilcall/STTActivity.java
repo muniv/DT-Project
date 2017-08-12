@@ -11,6 +11,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -58,6 +59,7 @@ public class STTActivity extends AppCompatActivity {
         thread.setDaemon(true);
         thread.start();
 
+        /*
         end_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,7 +70,26 @@ public class STTActivity extends AppCompatActivity {
                 new STTActivity.HttpAsyncTask().execute("http://34.223.211.250:3000/analyze");
             }
         });
+        */
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        manager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
+    private PhoneStateListener phoneStateListener = new PhoneStateListener()
+    {
+        public void onCallStateChanged(int state, String incomingNumber)
+        {
+            if(state==TelephonyManager.CALL_STATE_IDLE){
+                /*
+                Intent stt_activity_intent = new Intent(
+                        getApplicationContext(),
+                        STTActivity.class);
+                startActivity(stt_activity_intent);
+                */
+                dataResult= (String) tv.getText();
+                new STTActivity.HttpAsyncTask().execute("http://34.223.211.250:3000/analyze");
+            }
+        };
+    };
     private RecognitionListener listener = new RecognitionListener() {
 
         @Override
