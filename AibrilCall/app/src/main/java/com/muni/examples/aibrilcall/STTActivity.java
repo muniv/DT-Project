@@ -33,6 +33,7 @@ public class STTActivity extends AppCompatActivity {
     Intent i; //STT 인텐트
     SpeechRecognizer mRecognizer; //구글 STT SpeechRecognizer
     TextView tv; //STT결과를 보여주는 TextView
+
     String dataResult="";
     static String opponentNumber;
     @Override
@@ -41,7 +42,8 @@ public class STTActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stt);
 
         tv=(TextView) findViewById(R.id.tv);
-        tv.setText("");
+        tv.setText("안재현씨 오늘 괜찮았어요.아 네 시간있으면 말씀드릴게요.음 괜찮긴 했는데 재미없어더라고요.아 영화가 별로 좋지는 않으셨구나." +
+                "네 영화가 생각했던 것 보다 별로더라고요.네 감사해요 오늘 영화보고 밥먹고그런게 생각보다 피곤해서 일찍 잘 것 같아요.");
         //STT 설정 코드
         i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
@@ -180,6 +182,7 @@ public class STTActivity extends AppCompatActivity {
             jsonObject.accumulate("number", callData.getNumber());
             jsonObject.accumulate("name", callData.getName());
             jsonObject.accumulate("data", callData.getData());
+            jsonObject.accumulate("opponentNumber", callData.getOpponentNumber());
 
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
@@ -248,6 +251,13 @@ public class STTActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(
+                    getApplicationContext(),
+                    ResultActivity.class);
+            startActivity(intent);
+            Log.d("***********","ResultActivity 시작");
+
         }
     }
     private static String convertInputStreamToString(InputStream inputStream) throws IOException{

@@ -20,7 +20,10 @@ public class CallData {
     public void setData(String str){
         data=str;
     }
-    public void setOpponentNumber(String str) {opponentNumber=str;}
+    public void setOpponentNumber(String str) {
+        str=str.replaceAll("-","");
+        opponentNumber=str;
+    }
 
     public String getNumber() {
         return number;
@@ -34,6 +37,7 @@ public class CallData {
         return data;
     }
 
-    public String getOpponentNumber() { return opponentNumber; }
+    public String getOpponentNumber() {
+        return opponentNumber; }
 
 }
