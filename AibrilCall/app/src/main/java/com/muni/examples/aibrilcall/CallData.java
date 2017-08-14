@@ -10,6 +10,7 @@ public class CallData {
     private String name;
     private String data;
     private String opponentNumber;
+    private String time;
     //getters & setters....
     public void setNumber(String str){
         number=str;
@@ -23,6 +24,9 @@ public class CallData {
     public void setOpponentNumber(String str) {
         str=str.replaceAll("-","");
         opponentNumber=str;
+    }
+    public void setTime(String str){
+        time=str;
     }
 
     public String getNumber() {
@@ -39,5 +43,9 @@ public class CallData {
 
     public String getOpponentNumber() {
         return opponentNumber; }
+
+    public String getTime() {
+        return time;
+    }
 
 }

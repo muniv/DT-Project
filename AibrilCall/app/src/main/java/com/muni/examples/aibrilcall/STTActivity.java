@@ -28,7 +28,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class STTActivity extends AppCompatActivity {
     Intent i; //STT 인텐트
@@ -36,15 +38,27 @@ public class STTActivity extends AppCompatActivity {
     TextView tv; //STT결과를 보여주는 TextView
 
     String dataResult="";
+    String startTime="";
     static String opponentNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stt);
 
+        // 현재시간을 msec 으로 구한다.
+        long now = System.currentTimeMillis();
+        // 현재시간을 date 변수에 저장한다.
+        Date date = new Date(now);
+        // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        // nowDate 변수에 값을 저장한다.
+        startTime = sdfNow.format(date);
+
+
         tv=(TextView) findViewById(R.id.tv);
-        tv.setText("안재현씨 오늘 괜찮았어요.아 네 시간있으면 말씀드릴게요.음 괜찮긴 했는데 재미없어더라고요.아 영화가 별로 좋지는 않으셨구나." +
-                "네 영화가 생각했던 것 보다 별로더라고요.네 감사해요 오늘 영화보고 밥먹고그런게 생각보다 피곤해서 일찍 잘 것 같아요.");
+        tv.setText("");
+        //tv.setText("안재현씨 오늘 괜찮았어요.아 네 시간있으면 말씀드릴게요.음 괜찮긴 했는데 재미없어더라고요.아 영화가 별로 좋지는 않으셨구나." +
+               // "네 영화가 생각했던 것 보다 별로더라고요.네 감사해요 오늘 영화보고 밥먹고그런게 생각보다 피곤해서 일찍 잘 것 같아요.");
         //STT 설정 코드
         i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
@@ -54,23 +68,9 @@ public class STTActivity extends AppCompatActivity {
 
         final STTActivity.BackThread thread = new STTActivity.BackThread();//STT 스레드
 
-        final Button end_call=(Button) findViewById(R.id.end_call);
         // STT 스레드 생성하고 시작
         thread.setDaemon(true);
         thread.start();
-
-        /*
-        end_call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // STT 스레드 중단
-                Log.d("******","죽어라!");
-                thread.interrupt();
-                dataResult= (String) tv.getText();
-                new STTActivity.HttpAsyncTask().execute("http://34.223.211.250:3000/analyze");
-            }
-        });
-        */
         TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         manager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
@@ -78,13 +78,7 @@ public class STTActivity extends AppCompatActivity {
     {
         public void onCallStateChanged(int state, String incomingNumber)
         {
-            if(state==TelephonyManager.CALL_STATE_IDLE){
-                /*
-                Intent stt_activity_intent = new Intent(
-                        getApplicationContext(),
-                        STTActivity.class);
-                startActivity(stt_activity_intent);
-                */
+            if(state==TelephonyManager.CALL_STATE_IDLE){ //통화가 끝나면
                 dataResult= (String) tv.getText();
                 new STTActivity.HttpAsyncTask().execute("http://34.223.211.250:3000/analyze");
             }
@@ -161,7 +155,7 @@ public class STTActivity extends AppCompatActivity {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Log.d("******","thread주금!");
+                    //Log.d("******","thread주금!");
                 } finally {
 
                 }
@@ -204,6 +198,7 @@ public class STTActivity extends AppCompatActivity {
             jsonObject.accumulate("name", callData.getName());
             jsonObject.accumulate("data", callData.getData());
             jsonObject.accumulate("opponentNumber", callData.getOpponentNumber());
+            jsonObject.accumulate("time", callData.getTime());
 
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
@@ -265,7 +260,8 @@ public class STTActivity extends AppCompatActivity {
             callData.setName("주혜");
             callData.setData(dataResult);
             callData.setOpponentNumber(opponentNumber);
-            Log.d("*******sent data",phoneNum+", 주혜, "+dataResult+","+opponentNumber);
+            callData.setTime(startTime);
+            Log.d("*******sent data",phoneNum+", 주혜, "+dataResult+","+opponentNumber+","+startTime);
             return POST(urls[0],callData);
         }
         // onPostExecute displays the results of the AsyncTask.

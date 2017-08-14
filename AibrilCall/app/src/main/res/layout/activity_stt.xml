@@ -29,11 +29,6 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/end_call"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Analyze Call" />
         </LinearLayout>
 
     </LinearLayout>

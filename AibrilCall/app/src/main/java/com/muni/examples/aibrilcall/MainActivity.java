@@ -57,43 +57,15 @@ public class MainActivity extends AppCompatActivity {
 
         String serverURL = "http://34.223.211.250:3000/users";
         new MainActivity.HttpAsyncTask().execute(serverURL);
-        //ReceiveOperation receive = new ReceiveOperation();
-        //receive.execute(serverURL);
 
-        // 위에서 생성한 listview에 클릭 이벤트 핸들러 정의.
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView parent, View v, int position, long id) {
-                // get item
-                ListViewItem item = (ListViewItem) parent.getItemAtPosition(position) ;
-
-                String nameStr = item.getName() ;
-                String phoneStr = item.getPhone() ;
-
-                // TODO : use item data.
-
-            }
-        }) ;
         TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         manager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-        /*
-        Button test=(Button) findViewById(R.id.test);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(
-                        getApplicationContext(),
-                        STTActivity.class);
-                startActivity(intent);
-            }
-        });
-        */
     }
     private PhoneStateListener phoneStateListener = new PhoneStateListener()
     {
         public void onCallStateChanged(int state, String incomingNumber)
         {
-            if(state==TelephonyManager.CALL_STATE_OFFHOOK){
+            if(state==TelephonyManager.CALL_STATE_OFFHOOK){//통화시작하면 STTActivity 시작
                 Intent stt_activity_intent = new Intent(
                         getApplicationContext(),
                         STTActivity.class);
