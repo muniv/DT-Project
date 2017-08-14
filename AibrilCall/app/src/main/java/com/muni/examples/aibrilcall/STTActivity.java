@@ -40,6 +40,7 @@ public class STTActivity extends AppCompatActivity {
     String dataResult="";
     String startTime="";
     static String opponentNumber;
+    static CallData callData = new CallData();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,15 +51,15 @@ public class STTActivity extends AppCompatActivity {
         // 현재시간을 date 변수에 저장한다.
         Date date = new Date(now);
         // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMddHHmmss");
         // nowDate 변수에 값을 저장한다.
         startTime = sdfNow.format(date);
 
 
         tv=(TextView) findViewById(R.id.tv);
         tv.setText("");
-        //tv.setText("안재현씨 오늘 괜찮았어요.아 네 시간있으면 말씀드릴게요.음 괜찮긴 했는데 재미없어더라고요.아 영화가 별로 좋지는 않으셨구나." +
-               // "네 영화가 생각했던 것 보다 별로더라고요.네 감사해요 오늘 영화보고 밥먹고그런게 생각보다 피곤해서 일찍 잘 것 같아요.");
+        tv.setText("안재현씨 오늘 괜찮았어요.아 네 시간있으면 말씀드릴게요.음 괜찮긴 했는데 재미없어더라고요.아 영화가 별로 좋지는 않으셨구나." +
+                "네 영화가 생각했던 것 보다 별로더라고요.네 감사해요 오늘 영화보고 밥먹고그런게 생각보다 피곤해서 일찍 잘 것 같아요.");
         //STT 설정 코드
         i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
@@ -248,7 +249,7 @@ public class STTActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... urls) {
 
-            CallData callData = new CallData();
+
             // 현재 자신의 전화번호 불러오기
             TelephonyManager telManager = (TelephonyManager) getSystemService( Context.TELEPHONY_SERVICE);
             String phoneNum = telManager.getLine1Number();
