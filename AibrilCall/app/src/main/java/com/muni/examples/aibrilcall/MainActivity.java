@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static PopupMenu.OnMenuItemClickListener onMenuItemClickListener;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
                         int pid = android.os.Process.myPid();
                         android.os.Process.killProcess(pid);
                         break;
+                    case R.id.result_list:
+                        Intent intent1 = new Intent(
+                                getApplicationContext(), // 현재 화면의 제어권자
+                                CallSelectTabActivity.class); // 다음 넘어갈 클래스 지정
+                        startActivity(intent1); // 다음 화면으로 넘어간다
+                        break;
                 }
                 return false;
             }
@@ -59,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
                 popUp(view); //플로팅 버튼을 클릭하면 팝업메뉴가 나타나게 합니다.
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public final void popUp(View view) {

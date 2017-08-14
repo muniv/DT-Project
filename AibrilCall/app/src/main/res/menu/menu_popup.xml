@@ -8,4 +8,8 @@
         android:id="@+id/exit"
         android:title="Aibril Call 종료"
         android:icon="@android:drawable/ic_menu_search" />
+    <item
+        android:id="@+id/result_list"
+        android:title="분석 결과 시각화 리스트"
+        android:icon="@android:drawable/ic_menu_search" />
 </menu>
