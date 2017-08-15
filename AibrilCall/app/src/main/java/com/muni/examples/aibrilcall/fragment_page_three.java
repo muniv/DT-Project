@@ -57,11 +57,16 @@ public class fragment_page_three extends Fragment {
     CallData callData = STTActivity.callData;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private String sadness = "";
-    private String fear = "";
-    private String joy = "";
-    private String disgust="";
-    private String anger="";
+    private String sadnessMe = "";
+    private String fearMe = "";
+    private String joyMe = "";
+    private String disgustMe="";
+    private String angerMe="";
+    private String sadnessYou = "";
+    private String fearYou = "";
+    private String joyYou = "";
+    private String disgustYou="";
+    private String angerYou="";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -210,23 +215,28 @@ public class fragment_page_three extends Fragment {
             //String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/01077422367/01075079691/20170814111121");
 
             JSONObject jsonObject = new JSONObject(jsonPage);
-            JSONObject jObj = jsonObject.optJSONObject("me");
-            String jUnderObj = jObj.getString("emotion");
+            JSONObject jObjMe = jsonObject.optJSONObject("me");
+            String jUnderObjMe = jObjMe.getString("emotion");
 
-            JSONObject emotion = new JSONObject(jUnderObj);
-            sadness = emotion.getString("sadness");
-            fear = emotion.getString("fear");
-            joy = emotion.getString("joy");
-            disgust = emotion.getString("disgust");
-            anger = emotion.getString("anger");
+            JSONObject emotionMe = new JSONObject(jUnderObjMe);
+            sadnessMe = emotionMe.getString("sadness");
+            fearMe = emotionMe.getString("fear");
+            joyMe = emotionMe.getString("joy");
+            disgustMe = emotionMe.getString("disgust");
+            angerMe = emotionMe.getString("anger");
 
-            System.out.println("@@@@@!!!!!!!!!!!!sadness" + sadness);
-            System.out.println("@@@@@!!!!!!!!!!!!!!!!!!!fear" + fear);
-            System.out.println("@@@@@!!!!!!!!!!!!!!!!!!!j" + joy);
-            System.out.println("@@@@@!!!!!!!!!!!!!!!!!!!dd" + disgust);
-            System.out.println("@@@@@!!!!!!!!!!!!!!!!!!!aa" + anger);
+            JSONObject jObjYou = jsonObject.optJSONObject("you");
+            String jUnderObjYou = jObjYou.getString("emotion");
 
-            setData(joy, anger, sadness, disgust, fear);
+            JSONObject emotionYou = new JSONObject(jUnderObjYou);
+            sadnessYou = emotionYou.getString("sadness");
+            fearYou = emotionYou.getString("fear");
+            joyYou = emotionYou.getString("joy");
+            disgustYou = emotionYou.getString("disgust");
+            angerYou = emotionYou.getString("anger");
+
+
+            setData(joyMe, angerMe, sadnessMe, disgustMe, fearMe, joyYou, angerYou, sadnessYou, disgustYou, fearYou);
             //JSONArray jsonArray = jObj.getJSONArray("sadness");
 
             /*for(int i = 0; i < jsonArray.length(); i++)
@@ -433,16 +443,16 @@ public class fragment_page_three extends Fragment {
         return true;
     }
 
-    public void setData(String joy, String anger, String sadness, String disgust, String fear) {
+    public void setData(String joyMe, String angerMe, String sadnessMe, String disgustMe, String fearMe, String joyYou, String angerYou, String sadnessYou, String disgustYou, String fearYou) {
         System.out.print("@@@@@@@@@@@@@@@@@@@@ :" + "setData진입");
         float mult = 80;
         float min = 20;
         int cnt = 5;
         //"기쁨", "분노", "슬픔", "혐오", "두려움
-        System.out.print("@@@@@@@@@@@@joy :" + joy);
-        System.out.println("@@@@@@@@@@@@@@@@@doInsetData" + "- joy double value " + Double.parseDouble(joy));
-        double[] values1 = {Double.parseDouble(joy), Double.parseDouble(anger), Double.parseDouble(sadness), Double.parseDouble(disgust), Double.parseDouble(fear)};
-        double[] values2 = {0.139307, 0.198361, 0.082480, 0.078362, 0.092968};
+        //System.out.print("@@@@@@@@@@@@joy :" + joy);
+        //System.out.println("@@@@@@@@@@@@@@@@@doInsetData" + "- joy double value " + Double.parseDouble(joy));
+        double[] values1 = {Double.parseDouble(joyMe), Double.parseDouble(angerMe), Double.parseDouble(sadnessMe), Double.parseDouble(disgustMe), Double.parseDouble(fearMe)};
+        double[] values2 = {Double.parseDouble(joyYou), Double.parseDouble(angerYou), Double.parseDouble(sadnessYou), Double.parseDouble(disgustYou), Double.parseDouble(fearYou)};
         ArrayList<RadarEntry> entries1 = new ArrayList<RadarEntry>();
         ArrayList<RadarEntry> entries2 = new ArrayList<RadarEntry>();
 

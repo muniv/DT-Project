@@ -7,16 +7,12 @@ package com.muni.examples.aibrilcall;
 public class CallData {
 
     private String number;
-    private String name;
     private String data;
     private String opponentNumber;
     private String time;
     //getters & setters....
     public void setNumber(String str){
         number=str;
-    }
-    public void setName(String str){
-        name=str;
     }
     public void setData(String str){
         data=str;
@@ -32,10 +28,6 @@ public class CallData {
 
     public String getNumber() {
         return number;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getData() {

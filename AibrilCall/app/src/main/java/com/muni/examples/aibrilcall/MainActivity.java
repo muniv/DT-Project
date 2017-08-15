@@ -71,8 +71,31 @@ public class MainActivity extends AppCompatActivity {
         String serverURL = "http://34.223.211.250:3000/users";
         new MainActivity.HttpAsyncTask().execute(serverURL);
 
-        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        manager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        TelephonyManager telephonyMgr = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+        telephonyMgr.listen(new PhoneStateListener(){
+
+            public void onCallStateChanged(int state, String incommingNumber){
+
+                switch(state) {
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        System.out.println("@@@@@@@@@@@@@전화온다");
+                        System.out.println("@@@@@@@@@@@@@incommingNumber"+incommingNumber);
+                        STTActivity.opponentNumber=incommingNumber;
+                        break;
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        System.out.println("@@@@@@@@@@@@@통화끝");
+                        break;
+
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                        System.out.println("@@@@@@@@@@@@@통화시작");
+                        Intent stt_activity_intent = new Intent(
+                                getApplicationContext(),
+                                STTActivity.class);
+                        startActivity(stt_activity_intent);
+                        break;
+                }
+            }
+        }, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     PermissionListener permissionListener = new PermissionListener()
@@ -86,19 +109,6 @@ public class MainActivity extends AppCompatActivity {
         public void onPermissionDenied(ArrayList<String> deniedPermissions) {
 
         }
-    };
-
-    private PhoneStateListener phoneStateListener = new PhoneStateListener()
-    {
-        public void onCallStateChanged(int state, String incomingNumber)
-        {
-            if(state==TelephonyManager.CALL_STATE_OFFHOOK){//통화시작하면 STTActivity 시작
-                Intent stt_activity_intent = new Intent(
-                        getApplicationContext(),
-                        STTActivity.class);
-                startActivity(stt_activity_intent);
-            }
-        };
     };
 
     //목록 가져오기

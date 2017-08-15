@@ -39,22 +39,13 @@ public class STTActivity extends AppCompatActivity {
     TextView tv; //STT결과를 보여주는 TextView
     final STTActivity.BackThread thread = new STTActivity.BackThread();//STT 스레드
     String dataResult="";
-    String startTime="";
+    String endTime="";
     static String opponentNumber;
     static CallData callData = new CallData();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stt);
-
-        // 현재시간을 msec 으로 구한다.
-        long now = System.currentTimeMillis();
-        // 현재시간을 date 변수에 저장한다.
-        Date date = new Date(now);
-        // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
-        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMddHHmmss");
-        // nowDate 변수에 값을 저장한다.
-        startTime = sdfNow.format(date);
 
 
         tv=(TextView) findViewById(R.id.tv);
@@ -81,7 +72,18 @@ public class STTActivity extends AppCompatActivity {
         public void onCallStateChanged(int state, String incomingNumber)
         {
             if(state==TelephonyManager.CALL_STATE_IDLE){ //통화가 끝나면
+
                 dataResult= (String) tv.getText();
+
+                // 현재시간을 msec 으로 구한다.
+                long now = System.currentTimeMillis();
+                // 현재시간을 date 변수에 저장한다.
+                Date date = new Date(now);
+                // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
+                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMddHHmm");
+                // nowDate 변수에 값을 저장한다.
+                endTime = sdfNow.format(date);
+
                 new STTActivity.HttpAsyncTask().execute("http://34.223.211.250:3000/analyze");
             }
         };
@@ -198,7 +200,6 @@ public class STTActivity extends AppCompatActivity {
             // 3. build jsonObject
             JSONObject jsonObject = new JSONObject();
             jsonObject.accumulate("number", callData.getNumber());
-            jsonObject.accumulate("name", callData.getName());
             jsonObject.accumulate("data", callData.getData());
             jsonObject.accumulate("opponentNumber", callData.getOpponentNumber());
             jsonObject.accumulate("time", callData.getTime());
@@ -260,11 +261,10 @@ public class STTActivity extends AppCompatActivity {
             }
             //callData 세팅
             callData.setNumber(phoneNum);
-            callData.setName("주혜");
             callData.setData(dataResult);
             callData.setOpponentNumber(opponentNumber);
-            callData.setTime(startTime);
-            Log.d("*******sent data",phoneNum+", 주혜, "+dataResult+","+opponentNumber+","+startTime);
+            callData.setTime(endTime);
+            Log.d("*******sent data",phoneNum+","+dataResult+","+opponentNumber+","+endTime);
             return POST(urls[0],callData);
         }
         // onPostExecute displays the results of the AsyncTask.
