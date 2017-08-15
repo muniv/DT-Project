@@ -120,9 +120,7 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
-        mChart1.setMaxVisibleValueCount(2);
 
-        mChart2.setMaxVisibleValueCount(2);
 
         // scaling can now only be done on x- and y-axis separately
         mChart1.setPinchZoom(false);
@@ -140,14 +138,14 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
         XAxis xAxis = mChart1.getXAxis();
         xAxis.setLabelCount(2, false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-
         xAxis.setDrawGridLines(false);
         xAxis.setTextSize(10);
         xAxis.setTypeface(mTfLight);
         xAxis.setGranularity(1f);
-        xAxis.setCenterAxisLabels(true);
+        //xAxis.setCenterAxisLabels(true);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(views));
+        xAxis.setDrawAxisLine(false);
+
 
         mChart1.getAxisLeft().setDrawGridLines(false);
 
@@ -158,13 +156,13 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
         XAxis xAxis1 = mChart2.getXAxis();
         xAxis1.setLabelCount(2, false);
         xAxis1.setPosition(XAxis.XAxisPosition.BOTTOM);
-
         xAxis1.setDrawGridLines(false);
         xAxis1.setTextSize(10);
         xAxis1.setTypeface(mTfLight);
         xAxis1.setGranularity(1f);
-        xAxis1.setCenterAxisLabels(true);
+        //xAxis1.setCenterAxisLabels(true);
         xAxis1.setValueFormatter(new IndexAxisValueFormatter(views));
+        xAxis1.setDrawAxisLine(false);
 
         mChart2.getAxisLeft().setDrawGridLines(false);
 
@@ -180,14 +178,21 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
         leftAxis.setSpaceTop(15f);
         leftAxis.setAxisMaximum(100f);
         leftAxis.setAxisMinimum(0f);
+        leftAxis.setDrawAxisLine(false);
+        leftAxis.setDrawLabels(false);
+        leftAxis.setDrawGridLines(false);
 
 
-/*        YAxis rightAxis = mChart1.getAxisRight();
+        YAxis rightAxis = mChart1.getAxisRight();
         rightAxis.setTypeface(mTfLight);
         rightAxis.setLabelCount(5, false);
         rightAxis.setSpaceTop(15f);
         rightAxis.setAxisMaximum(100f);
-        rightAxis.setAxisMinimum(0f);*/
+        rightAxis.setAxisMinimum(0f);
+        rightAxis.setDrawAxisLine(false);
+        rightAxis.setDrawLabels(false);
+        rightAxis.setDrawGridLines(false);
+
 
         YAxis leftAxis1 = mChart2.getAxisLeft();
         leftAxis1.setTypeface(mTfLight);
@@ -195,13 +200,19 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
         leftAxis1.setSpaceTop(15f);
         leftAxis1.setAxisMaximum(100f);
         leftAxis1.setAxisMinimum(0f);
+        leftAxis1.setDrawAxisLine(false);
+        leftAxis1.setDrawLabels(false);
+        leftAxis1.setDrawGridLines(false);
 
-/*        YAxis rightAxis1 = mChart2.getAxisRight();
+        YAxis rightAxis1 = mChart2.getAxisRight();
         rightAxis1.setTypeface(mTfLight);
         rightAxis1.setLabelCount(5, false);
         rightAxis1.setSpaceTop(15f);
         rightAxis1.setAxisMaximum(100f);
-        rightAxis1.setAxisMinimum(0f);*/
+        rightAxis1.setAxisMinimum(0f);
+        rightAxis1.setDrawAxisLine(false);
+        rightAxis1.setDrawLabels(false);
+        rightAxis1.setDrawGridLines(false);
 
 
 
@@ -321,7 +332,7 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.actionToggleValues: {
+    /*        case R.id.actionToggleValues: {
 
                 for (IDataSet set : mChart1.getData().getDataSets())
                     set.setDrawValues(!set.isDrawValuesEnabled());
@@ -333,8 +344,8 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
                 mChart2.invalidate();
                 break;
-            }
-            case R.id.actionToggleHighlight: {
+            }*/
+          /*  case R.id.actionToggleHighlight: {
 
                 if(mChart1.getData() != null) {
                     mChart1.getData().setHighlightEnabled(!mChart1.getData().isHighlightEnabled());
@@ -346,8 +357,8 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
                     mChart2.invalidate();
                 }
                 break;
-            }
-            case R.id.actionTogglePinch: {
+            }*/
+          /*  case R.id.actionTogglePinch: {
                 if (mChart1.isPinchZoomEnabled())
                     mChart1.setPinchZoom(false);
                 else
@@ -362,16 +373,16 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
                 mChart2.invalidate();
                 break;
-            }
-            case R.id.actionToggleAutoScaleMinMax: {
+            }*/
+           /* case R.id.actionToggleAutoScaleMinMax: {
                 mChart1.setAutoScaleMinMaxEnabled(!mChart1.isAutoScaleMinMaxEnabled());
                 mChart1.notifyDataSetChanged();
 
                 mChart2.setAutoScaleMinMaxEnabled(!mChart2.isAutoScaleMinMaxEnabled());
                 mChart2.notifyDataSetChanged();
                 break;
-            }
-            case R.id.actionToggleBarBorders: {
+            }*/
+        /*    case R.id.actionToggleBarBorders: {
                 for (IBarDataSet set : mChart1.getData().getDataSets())
                     ((BarDataSet)set).setBarBorderWidth(set.getBarBorderWidth() == 1.f ? 0.f : 1.f);
 
@@ -382,7 +393,7 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
                 mChart2.invalidate();
                 break;
-            }
+            }*/
             case R.id.animateX: {
                 mChart1.animateX(3000);
 
@@ -434,10 +445,10 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
         for (int i = 0; i < cnt; i++) {
             //float mult = (mSeekBarY.getProgress() + 1);
-            float val1 = (float) ((values1[i] * 70)+30);
-            float val2 = (float) ((values2[i] * 70)+30);
-            yVals1.add(new BarEntry(i+1, val1));
-            yVals2.add(new BarEntry(i+1, val2));
+            float val1 = (float) Math.round((values1[i] * 100));
+            float val2 = (float) Math.round((values2[i] * 100));
+            yVals1.add(new BarEntry(i, val1));
+            yVals2.add(new BarEntry(i, val2));
         }
 
         BarDataSet set1, set2;
@@ -451,7 +462,7 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
         } else {
             set1 = new BarDataSet(yVals1, "Data Set");
             set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
-            set1.setDrawValues(false);
+            //set1.setDrawValues(false);
 
             ArrayList<IBarDataSet> dataSets1 = new ArrayList<IBarDataSet>();
             dataSets1.add(set1);
@@ -472,7 +483,7 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
         } else {
             set2 = new BarDataSet(yVals2, "Data Set");
             set2.setColors(ColorTemplate.VORDIPLOM_COLORS);
-            set2.setDrawValues(false);
+            //set2.setDrawValues(false);
 
             ArrayList<IBarDataSet> dataSets2 = new ArrayList<IBarDataSet>();
             dataSets2.add(set2);
