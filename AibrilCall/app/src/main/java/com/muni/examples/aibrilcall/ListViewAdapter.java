@@ -70,6 +70,9 @@ public class ListViewAdapter extends BaseAdapter {
                 listText=listViewItemList.get(position_this).getPhone();
                 STTActivity.opponentNumber=listText;
                 Intent call_intent=new Intent(Intent.ACTION_CALL);
+                //call_intent.setPackage("com.android.phone");
+                call_intent.setPackage("com.android.server.telecom");
+
                 call_intent.setData(Uri.parse("tel:"+listText));
                 try {
                     context.startActivity(call_intent);
@@ -77,6 +80,7 @@ public class ListViewAdapter extends BaseAdapter {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
 
             }
         });

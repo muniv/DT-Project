@@ -29,11 +29,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:recyclerview-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-
-
-
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    compile 'gun0912.ted:tedpermission:1.0.2'
+
 
 
 }

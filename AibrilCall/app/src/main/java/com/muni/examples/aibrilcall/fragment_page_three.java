@@ -54,6 +54,7 @@ import java.util.ArrayList;
 public class fragment_page_three extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    CallData callData = STTActivity.callData;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String sadness = "";
@@ -205,8 +206,8 @@ public class fragment_page_three extends Fragment {
         try
         {
             //주어진 URL 문서의 내용을 문자열로 얻는다.
-            //String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/"+callData.getNumber()+"/"+callData.getOpponentNumber()+"/"+callData.getTime());
-            String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/01077422367/01075079691/20170814111121");
+            String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/"+callData.getNumber()+"/"+callData.getOpponentNumber()+"/"+callData.getTime());
+            //String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/01077422367/01075079691/20170814111121");
 
             JSONObject jsonObject = new JSONObject(jsonPage);
             JSONObject jObj = jsonObject.optJSONObject("me");

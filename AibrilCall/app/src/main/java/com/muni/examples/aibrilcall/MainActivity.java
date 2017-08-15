@@ -1,5 +1,6 @@
 package com.muni.examples.aibrilcall;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Message;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
@@ -20,6 +22,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +54,14 @@ public class MainActivity extends AppCompatActivity {
         ListView listview ;
         ListViewAdapter adapter;
 
+        // 권한체크 시작
+        new TedPermission(this)
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage("Aibril Call을 사용하기 위해서 \n 하단 확인 버튼을 누르면 통화 권한 설정을 시작합니다.")
+                .setDeniedMessage("권한을 설정하지 않을 경우 사용이 불가능하며, \n[설정] > [권한] 에서 권한 재설정이 가능합니다.")
+                .setPermissions(Manifest.permission.INTERNET, Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE, Manifest.permission.ACCESS_NETWORK_STATE,Manifest.permission.RECORD_AUDIO)
+                .check();
+
         // Adapter 생성
         adapter = new ListViewAdapter() ;
         // 리스트뷰 참조 및 Adapter달기
@@ -61,6 +74,20 @@ public class MainActivity extends AppCompatActivity {
         TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         manager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
+
+    PermissionListener permissionListener = new PermissionListener()
+    {
+        @Override
+        public void onPermissionGranted() {
+
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+
+        }
+    };
+
     private PhoneStateListener phoneStateListener = new PhoneStateListener()
     {
         public void onCallStateChanged(int state, String incomingNumber)
