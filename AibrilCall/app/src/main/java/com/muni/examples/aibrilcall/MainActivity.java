@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // 각각의 JSON Node를 처리/
 
-                    int lengthJsonArr = jsonMainNode.length();//"registered_sites 로 시작하는 서브노드배열의 갯수를 구함
+                    int lengthJsonArr = jsonMainNode.length();//서브노드배열의 갯수를 구함
 
                     // listview.setAdapter(adapter) ;
                     for(int i=0; i < lengthJsonArr; i++)

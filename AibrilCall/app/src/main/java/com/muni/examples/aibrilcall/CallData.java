@@ -22,6 +22,7 @@ public class CallData {
         data=str;
     }
     public void setOpponentNumber(String str) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!진입");
         str=str.replaceAll("-","");
         opponentNumber=str;
     }

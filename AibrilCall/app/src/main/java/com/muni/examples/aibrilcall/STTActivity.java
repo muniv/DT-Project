@@ -11,6 +11,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telecom.Call;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -36,7 +37,7 @@ public class STTActivity extends AppCompatActivity {
     Intent i; //STT 인텐트
     SpeechRecognizer mRecognizer; //구글 STT SpeechRecognizer
     TextView tv; //STT결과를 보여주는 TextView
-
+    final STTActivity.BackThread thread = new STTActivity.BackThread();//STT 스레드
     String dataResult="";
     String startTime="";
     static String opponentNumber;
@@ -67,7 +68,7 @@ public class STTActivity extends AppCompatActivity {
         mRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         mRecognizer.setRecognitionListener(listener); //STT 리스너
 
-        final STTActivity.BackThread thread = new STTActivity.BackThread();//STT 스레드
+
 
         // STT 스레드 생성하고 시작
         thread.setDaemon(true);
@@ -148,19 +149,20 @@ public class STTActivity extends AppCompatActivity {
     class BackThread extends Thread{
         @Override
         public void run() {
-            while(true){
+            while(!Thread.currentThread().isInterrupted()){
                 // 메인에서 생성된 Handler 객체의 sendEmpryMessage 를 통해 Message 전달
                 handler.sendEmptyMessage(0);
 
                 try {
-                    Thread.sleep(100);
+                    thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    //Log.d("******","thread주금!");
+                    System.out.println("Thread is dead!!!");
                 } finally {
 
                 }
-            } // end while
+            }
+
         } // end run()
 
     } // end class BackThread
@@ -268,15 +270,21 @@ public class STTActivity extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+            thread.interrupted(); //스레드 죽어라!
             Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
 
-            Intent intent = new Intent(
-                    getApplicationContext(),
-                    ResultActivity.class);
-            startActivity(intent);
-            Log.d("***********","ResultActivity 시작");
+            startResultActivity();
+
 
         }
+    }
+    void startResultActivity(){
+        Intent intent = new Intent(
+                getApplicationContext(),
+                CallSelectTabActivity.class);
+        startActivity(intent);
+        Log.d("***********","ResultActivity 시작");
+        //this.finish();
     }
     private static String convertInputStreamToString(InputStream inputStream) throws IOException{
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));

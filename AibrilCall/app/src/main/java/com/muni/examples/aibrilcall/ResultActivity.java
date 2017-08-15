@@ -1,33 +1,147 @@
 package com.muni.examples.aibrilcall;
 
+import android.app.Activity;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultActivity extends Activity {
     CallData callData = STTActivity.callData;
+    private TextView tvPrintContents; // 내용이 출력되는 TextView.
+    private String test;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        new ResultActivity.HttpAsyncTask().execute("http://34.223.211.250:3000/phone/"+callData.getNumber()+"/"+callData.getOpponentNumber()+"/"+callData.getTime());
+        new JsonLoadingTask().execute();
+        //new ResultActivity.HttpAsyncTask().execute("http://34.223.211.250:3000/phone/"+callData.getNumber()+"/"+callData.getOpponentNumber()+"/"+callData.getTime());
+        //new ResultActivity.HttpAsyncTask().execute("http://34.223.211.250:3000/phone/01077422367/01075079691/20170814111121");
+    }
+    private class JsonLoadingTask extends AsyncTask<String, Void, String>
+    {
+        @Override
+        protected String doInBackground(String... strs)
+        {
+            String var = getJsonText();
+            return var;
+        } // doInBackground : 백그라운드 작업을 진행한다.
+
+        @Override
+        protected void onPostExecute(String result)
+        {
+            tvPrintContents.setText(result);
+        } // onPostExecute : 백그라운드 작업이 끝난 후 UI 작업을 진행한다.
+    } // JsonLoadingTask
+
+    public String getJsonText()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        try
+        {
+            //주어진 URL 문서의 내용을 문자열로 얻는다.
+            //String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/"+callData.getNumber()+"/"+callData.getOpponentNumber()+"/"+callData.getTime());
+            String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/01077422367/01075079691/20170814111121");
+
+            JSONObject jsonObject = new JSONObject(jsonPage);
+            JSONObject jObj = jsonObject.optJSONObject("me");
+            String jUnderObj = jObj.getString("emotion");
+
+            JSONObject emotion = new JSONObject(jUnderObj);
+            String sadness = emotion.getString("sadness");
+            String fear = emotion.getString("fear");
+            String joy = emotion.getString("joy");
+            String disgust = emotion.getString("disgust");
+            String anger = emotion.getString("anger");
+
+            System.out.println("!!!!!!!!!!!!!!!!!!!" + sadness);
+            System.out.println("!!!!!!!!!!!!!!!!!!!" + fear);
+            System.out.println("!!!!!!!!!!!!!!!!!!!" + joy);
+            System.out.println("!!!!!!!!!!!!!!!!!!!" + disgust);
+            System.out.println("!!!!!!!!!!!!!!!!!!!" + anger);
+
+
+            //JSONArray jsonArray = jObj.getJSONArray("sadness");
+
+            /*for(int i = 0; i < jsonArray.length(); i++)
+            {
+                jObj = jsonArray.getJSONObject(i);
+
+                String var = jObj.toString();
+            }*/
+        }
+
+        catch (Exception e)
+        {
+            // TODO: handle exception
+        }
+
+        return sb.toString();
+    }//getJsonText()-----------
+
+    public String getStringFromUrl(String pUrl)
+    {
+        BufferedReader bufreader=null;
+        HttpURLConnection urlConnection = null;
+
+        StringBuffer page=new StringBuffer(); //읽어온 데이터를 저장할 StringBuffer객체 생성
+
+        try
+        {
+            URL url= new URL(pUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream contentStream = urlConnection.getInputStream();
+
+            bufreader = new BufferedReader(new InputStreamReader(contentStream,"UTF-8"));
+            String line = null;
+
+            while((line = bufreader.readLine())!=null)
+            {
+                page.append(line);
+            }
+        }
+
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        finally
+        {
+            try
+            {
+                bufreader.close();
+                urlConnection.disconnect();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return page.toString();
     }
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         private String Content;
         private String Error = null;
-
+        ListView listview = (ListView) findViewById(R.id.listview_users);
+        ListViewAdapter adapter= (ListViewAdapter) listview.getAdapter();
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -74,35 +188,24 @@ public class ResultActivity extends AppCompatActivity {
                 JSONObject jsonResponse;
                 try {
                     /****** 문자열 Content변수내용을 JSON Object로 생성 ********/
-                    jsonResponse = new JSONObject(Content);
+                    //jsonResponse = new JSONObject(Content);
 
-                    // JSONArray에서 항목 이름으로 결과 값 조회
-                    JSONArray jsonMainNode = jsonResponse.optJSONArray("emotion");
+                    JSONObject jsonObject = new JSONObject(Content);
+                    JSONObject jObj = jsonObject.optJSONObject("me");
+                    String jUnderObj = jObj.getString("emotion");
 
-                    // 각각의 JSON Node를 처리/
+                    JSONObject emotion = new JSONObject(jUnderObj);
+                    String sadness = emotion.getString("sadness");
+                    String fear = emotion.getString("fear");
+                    String joy = emotion.getString("joy");
+                    String disgust = emotion.getString("disgust");
+                    String anger = emotion.getString("anger");
 
-                    int lengthJsonArr = jsonMainNode.length();//"registered_sites 로 시작하는 서브노드배열의 갯수를 구함
-
-                    // listview.setAdapter(adapter) ;
-                    for(int i=0; i < lengthJsonArr; i++)
-                    {
-                        /****** JSON node에서 데이터를 얻어옴***********/
-                        JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-
-                        /******* 노드 밸류에서 값을 얻어옴**********/
-                        String sadness       = jsonChildNode.optString("sadness").toString();
-                        String joy     = jsonChildNode.optString("joy").toString();
-                        String fear     = jsonChildNode.optString("fear").toString();
-                        String disgust     = jsonChildNode.optString("disgust").toString();
-                        String anger     = jsonChildNode.optString("anger").toString();
-
-                        Log.d("*************sadness",sadness);
-                        Log.d("*************joy",joy);
-                        Log.d("*************fear",fear);
-                        Log.d("*************disgust",disgust);
-                        Log.d("*************anger",anger);
-
-                    }
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + sadness);
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + fear);
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + joy);
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + disgust);
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + anger);
                     /****************** JSON Data parsing 완료 *************/
                 } catch (JSONException e) {
                     e.printStackTrace();

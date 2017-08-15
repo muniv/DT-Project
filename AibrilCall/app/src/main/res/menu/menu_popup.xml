@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/load_call"
+        android:title="통화 불러오기"
+        android:icon="@android:drawable/ic_menu_save" />
+    <item
+        android:id="@+id/exit"
+        android:title="Aibril Call 종료"
+        android:icon="@android:drawable/ic_menu_search" />
+    <item
+        android:id="@+id/result_list"
+        android:title="분석 결과 시각화 리스트"
+        android:icon="@android:drawable/ic_menu_search" />
+</menu>
