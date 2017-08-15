@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -31,6 +32,14 @@ import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 import com.muni.examples.aibrilcall.custom.RadarMarkerView;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -47,7 +56,11 @@ public class fragment_page_three extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private String sadness = "";
+    private String fear = "";
+    private String joy = "";
+    private String disgust="";
+    private String anger="";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -88,7 +101,7 @@ public class fragment_page_three extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        new JsonLoadingTask().execute();
     }
 
     @Override
@@ -124,7 +137,6 @@ public class fragment_page_three extends Fragment {
         mv.setChartView(mChart); // For bounds control
         mChart.setMarker(mv); // Set the marker to the chart
 
-        setData();
 
         mChart.animateXY(
                 1400, 1400,
@@ -167,6 +179,119 @@ public class fragment_page_three extends Fragment {
 
         return view;
     }
+
+    private class JsonLoadingTask extends AsyncTask<String, Void, String>
+    {
+        @Override
+        protected String doInBackground(String... strs)
+        {
+
+            String var = getJsonText();
+            System.out.println("@@@@@@@@@@@@@@@@@doInBackground");
+            return var;
+        } // doInBackground : 백그라운드 작업을 진행한다.
+
+        @Override
+        protected void onPostExecute(String result)
+        {
+            //tvPrintContents.setText(result);
+        } // onPostExecute : 백그라운드 작업이 끝난 후 UI 작업을 진행한다.
+    } // JsonLoadingTask
+
+    public String getJsonText()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        try
+        {
+            //주어진 URL 문서의 내용을 문자열로 얻는다.
+            //String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/"+callData.getNumber()+"/"+callData.getOpponentNumber()+"/"+callData.getTime());
+            String jsonPage = getStringFromUrl("http://34.223.211.250:3000/phone/01077422367/01075079691/20170814111121");
+
+            JSONObject jsonObject = new JSONObject(jsonPage);
+            JSONObject jObj = jsonObject.optJSONObject("me");
+            String jUnderObj = jObj.getString("emotion");
+
+            JSONObject emotion = new JSONObject(jUnderObj);
+            sadness = emotion.getString("sadness");
+            fear = emotion.getString("fear");
+            joy = emotion.getString("joy");
+            disgust = emotion.getString("disgust");
+            anger = emotion.getString("anger");
+
+            System.out.println("@@@@@!!!!!!!!!!!!sadness" + sadness);
+            System.out.println("@@@@@!!!!!!!!!!!!!!!!!!!fear" + fear);
+            System.out.println("@@@@@!!!!!!!!!!!!!!!!!!!j" + joy);
+            System.out.println("@@@@@!!!!!!!!!!!!!!!!!!!dd" + disgust);
+            System.out.println("@@@@@!!!!!!!!!!!!!!!!!!!aa" + anger);
+
+            setData(joy, anger, sadness, disgust, fear);
+            //JSONArray jsonArray = jObj.getJSONArray("sadness");
+
+            /*for(int i = 0; i < jsonArray.length(); i++)
+            {
+                jObj = jsonArray.getJSONObject(i);
+
+                String var = jObj.toString();
+            }*/
+        }
+
+        catch (Exception e)
+        {
+            // TODO: handle exception
+        }
+
+        return sb.toString();
+    }//getJsonText()-----------
+
+    public String getStringFromUrl(String pUrl)
+    {
+        BufferedReader bufreader=null;
+        HttpURLConnection urlConnection = null;
+
+        StringBuffer page=new StringBuffer(); //읽어온 데이터를 저장할 StringBuffer객체 생성
+
+        try
+        {
+
+            URL url= new URL(pUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream contentStream = urlConnection.getInputStream();
+
+            bufreader = new BufferedReader(new InputStreamReader(contentStream,"UTF-8"));
+            String line = null;
+
+            while((line = bufreader.readLine())!=null)
+            {
+                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@wile 진입");
+                page.append(line);
+            }
+        }
+
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        finally
+        {
+            try
+            {
+                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@finally try 진입");
+                bufreader.close();
+                urlConnection.disconnect();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return page.toString();
+    }
+
+
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -307,13 +432,15 @@ public class fragment_page_three extends Fragment {
         return true;
     }
 
-    public void setData() {
-
+    public void setData(String joy, String anger, String sadness, String disgust, String fear) {
+        System.out.print("@@@@@@@@@@@@@@@@@@@@ :" + "setData진입");
         float mult = 80;
         float min = 20;
         int cnt = 5;
-
-        double[] values1 = {0.017381, 0.574326, 0.0258237, 0.204626, 0.23137};
+        //"기쁨", "분노", "슬픔", "혐오", "두려움
+        System.out.print("@@@@@@@@@@@@joy :" + joy);
+        System.out.println("@@@@@@@@@@@@@@@@@doInsetData" + "- joy double value " + Double.parseDouble(joy));
+        double[] values1 = {Double.parseDouble(joy), Double.parseDouble(anger), Double.parseDouble(sadness), Double.parseDouble(disgust), Double.parseDouble(fear)};
         double[] values2 = {0.139307, 0.198361, 0.082480, 0.078362, 0.092968};
         ArrayList<RadarEntry> entries1 = new ArrayList<RadarEntry>();
         ArrayList<RadarEntry> entries2 = new ArrayList<RadarEntry>();

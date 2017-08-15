@@ -1,7 +1,5 @@
 package com.muni.examples.aibrilcall;
 
-import android.graphics.drawable.Drawable;
-
 /**
  * Created by Developer on 2017-08-14.
  */

@@ -14,12 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -27,7 +25,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -61,10 +58,10 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
     private OnFragmentInteractionListener mListener;
 
 
-    private BarChart mChart;
-    private TextView tvX, tvY;
+    private BarChart mChart1, mChart2;
     protected Typeface mTfRegular;
     protected Typeface mTfLight;
+    private TextView tvText;
 
 
     public fragment_page_one() {
@@ -105,44 +102,111 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        View view = inflater.inflate(R.layout.activity_multibarchart, container, false);
+        View view = inflater.inflate(R.layout.activity_barchart_noseekbar, container, false);
 
         mTfRegular = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
         mTfLight = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Light.ttf");
 
-/*        tvX = (TextView) view.findViewById(R.id.tvXMax);
-        tvX.setTextSize(10);
-        tvY = (TextView) view.findViewById(R.id.tvYMax);*/
 
-        mChart = (BarChart) view.findViewById(R.id.chart1);
-        mChart.setOnChartValueSelectedListener(this);
-        mChart.getDescription().setEnabled(false);
+        tvText = (TextView) view.findViewById(R.id.tvText);
+
+        mChart1 = (BarChart) view.findViewById(R.id.chart1);
+        mChart1.setOnChartValueSelectedListener(this);
+        mChart1.getDescription().setEnabled(false);
+
+        mChart2 = (BarChart) view.findViewById(R.id.chart2);
+        mChart2.setOnChartValueSelectedListener(this);
+        mChart2.getDescription().setEnabled(false);
 
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
-        mChart.setMaxVisibleValueCount(60);
+        mChart1.setMaxVisibleValueCount(2);
+
+        mChart2.setMaxVisibleValueCount(2);
 
         // scaling can now only be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
+        mChart1.setPinchZoom(false);
+        mChart1.setDrawBarShadow(false);
+        mChart1.setDrawGridBackground(false);
 
-        mChart.setDrawBarShadow(false);
-        mChart.setDrawGridBackground(false);
+        mChart2.setPinchZoom(false);
+        mChart2.setDrawBarShadow(false);
+        mChart2.setDrawGridBackground(false);
 
-/*        XAxis xAxis = mChart.getXAxis();
+
+
+        final String[] views = {"긍정", "부정"};
+
+        XAxis xAxis = mChart1.getXAxis();
+        xAxis.setLabelCount(2, false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
 
-        mChart.getAxisLeft().setDrawGridLines(false);*/
+
+        xAxis.setDrawGridLines(false);
+        xAxis.setTextSize(10);
+        xAxis.setTypeface(mTfLight);
+        xAxis.setGranularity(1f);
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(views));
+
+        mChart1.getAxisLeft().setDrawGridLines(false);
 
         MyMarkerView mv = new MyMarkerView(this.getContext(), R.layout.custom_marker_view);
-        mv.setChartView(mChart); // For bounds control
-        mChart.setMarker(mv); // Set the marker to the chart
+        mv.setChartView(mChart1); // For bounds control
+        mChart1.setMarker(mv); // Set the marker to the chart
 
-        // setting data
-/*        mSeekBarX.setProgress(1);
-        mSeekBarY.setProgress(100);*/
+        XAxis xAxis1 = mChart2.getXAxis();
+        xAxis1.setLabelCount(2, false);
+        xAxis1.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        Legend l = mChart.getLegend();
+        xAxis1.setDrawGridLines(false);
+        xAxis1.setTextSize(10);
+        xAxis1.setTypeface(mTfLight);
+        xAxis1.setGranularity(1f);
+        xAxis1.setCenterAxisLabels(true);
+        xAxis1.setValueFormatter(new IndexAxisValueFormatter(views));
+
+        mChart2.getAxisLeft().setDrawGridLines(false);
+
+        MyMarkerView mv1 = new MyMarkerView(this.getContext(), R.layout.custom_marker_view);
+        mv1.setChartView(mChart2); // For bounds control
+        mChart2.setMarker(mv1); // Set the marker to the chart
+
+
+
+        YAxis leftAxis = mChart1.getAxisLeft();
+        leftAxis.setTypeface(mTfLight);
+        leftAxis.setLabelCount(5, false);
+        leftAxis.setSpaceTop(15f);
+        leftAxis.setAxisMaximum(100f);
+        leftAxis.setAxisMinimum(0f);
+
+
+/*        YAxis rightAxis = mChart1.getAxisRight();
+        rightAxis.setTypeface(mTfLight);
+        rightAxis.setLabelCount(5, false);
+        rightAxis.setSpaceTop(15f);
+        rightAxis.setAxisMaximum(100f);
+        rightAxis.setAxisMinimum(0f);*/
+
+        YAxis leftAxis1 = mChart2.getAxisLeft();
+        leftAxis1.setTypeface(mTfLight);
+        leftAxis1.setLabelCount(5, false);
+        leftAxis1.setSpaceTop(15f);
+        leftAxis1.setAxisMaximum(100f);
+        leftAxis1.setAxisMinimum(0f);
+
+/*        YAxis rightAxis1 = mChart2.getAxisRight();
+        rightAxis1.setTypeface(mTfLight);
+        rightAxis1.setLabelCount(5, false);
+        rightAxis1.setSpaceTop(15f);
+        rightAxis1.setAxisMaximum(100f);
+        rightAxis1.setAxisMinimum(0f);*/
+
+
+
+
+/*        Legend l = mChart1.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
@@ -155,19 +219,19 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
         final String[] views = {"나", "상대방"};
 
-        XAxis xAxis = mChart.getXAxis();
+        XAxis xAxis = mChart1.getXAxis();
         xAxis.setTextSize(10);
         xAxis.setTypeface(mTfLight);
         xAxis.setGranularity(1f);
         xAxis.setCenterAxisLabels(true);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(views));
 
-        YAxis leftAxis = mChart.getAxisLeft();
+        YAxis leftAxis = mChart1.getAxisLeft();
         leftAxis.setTypeface(mTfLight);
         leftAxis.setValueFormatter(new LargeValueFormatter());
         leftAxis.setDrawGridLines(false);
         leftAxis.setSpaceTop(35f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)*/
 
 /*
         XAxis xAxis = mChart.getXAxis();
@@ -188,12 +252,16 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
 
 
-        mChart.getAxisRight().setEnabled(false);
+        //mChart1.getAxisRight().setEnabled(false);
 
         // add a nice and smooth animation
-        mChart.animateY(2500);
+        mChart1.animateY(2500);
 
-        mChart.getLegend().setEnabled(false);
+        mChart1.getLegend().setEnabled(false);
+
+        mChart2.animateY(2500);
+
+        mChart2.getLegend().setEnabled(false);
 
         setData(2);
 
@@ -255,56 +323,94 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
         switch (item.getItemId()) {
             case R.id.actionToggleValues: {
 
-                for (IDataSet set : mChart.getData().getDataSets())
+                for (IDataSet set : mChart1.getData().getDataSets())
                     set.setDrawValues(!set.isDrawValuesEnabled());
 
-                mChart.invalidate();
+                mChart1.invalidate();
+
+                for (IDataSet set : mChart2.getData().getDataSets())
+                    set.setDrawValues(!set.isDrawValuesEnabled());
+
+                mChart2.invalidate();
                 break;
             }
             case R.id.actionToggleHighlight: {
 
-                if(mChart.getData() != null) {
-                    mChart.getData().setHighlightEnabled(!mChart.getData().isHighlightEnabled());
-                    mChart.invalidate();
+                if(mChart1.getData() != null) {
+                    mChart1.getData().setHighlightEnabled(!mChart1.getData().isHighlightEnabled());
+                    mChart1.invalidate();
+                }
+
+                if(mChart2.getData() != null) {
+                    mChart2.getData().setHighlightEnabled(!mChart2.getData().isHighlightEnabled());
+                    mChart2.invalidate();
                 }
                 break;
             }
             case R.id.actionTogglePinch: {
-                if (mChart.isPinchZoomEnabled())
-                    mChart.setPinchZoom(false);
+                if (mChart1.isPinchZoomEnabled())
+                    mChart1.setPinchZoom(false);
                 else
-                    mChart.setPinchZoom(true);
+                    mChart1.setPinchZoom(true);
 
-                mChart.invalidate();
+                mChart1.invalidate();
+
+                if (mChart2.isPinchZoomEnabled())
+                    mChart2.setPinchZoom(false);
+                else
+                    mChart2.setPinchZoom(true);
+
+                mChart2.invalidate();
                 break;
             }
             case R.id.actionToggleAutoScaleMinMax: {
-                mChart.setAutoScaleMinMaxEnabled(!mChart.isAutoScaleMinMaxEnabled());
-                mChart.notifyDataSetChanged();
+                mChart1.setAutoScaleMinMaxEnabled(!mChart1.isAutoScaleMinMaxEnabled());
+                mChart1.notifyDataSetChanged();
+
+                mChart2.setAutoScaleMinMaxEnabled(!mChart2.isAutoScaleMinMaxEnabled());
+                mChart2.notifyDataSetChanged();
                 break;
             }
             case R.id.actionToggleBarBorders: {
-                for (IBarDataSet set : mChart.getData().getDataSets())
+                for (IBarDataSet set : mChart1.getData().getDataSets())
                     ((BarDataSet)set).setBarBorderWidth(set.getBarBorderWidth() == 1.f ? 0.f : 1.f);
 
-                mChart.invalidate();
+                mChart1.invalidate();
+
+                for (IBarDataSet set : mChart2.getData().getDataSets())
+                    ((BarDataSet)set).setBarBorderWidth(set.getBarBorderWidth() == 1.f ? 0.f : 1.f);
+
+                mChart2.invalidate();
                 break;
             }
             case R.id.animateX: {
-                mChart.animateX(3000);
+                mChart1.animateX(3000);
+
+                mChart2.animateX(3000);
                 break;
             }
             case R.id.animateY: {
-                mChart.animateY(3000);
+                mChart1.animateY(3000);
+
+                mChart2.animateY(3000);
                 break;
             }
             case R.id.animateXY: {
 
-                mChart.animateXY(3000, 3000);
+                mChart1.animateXY(3000, 3000);
+
+                mChart2.animateXY(3000, 3000);
                 break;
             }
             case R.id.actionSave: {
-                if (mChart.saveToGallery("title" + System.currentTimeMillis(), 50)) {
+                if (mChart1.saveToGallery("title" + System.currentTimeMillis(), 50)) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Saving SUCCESSFUL!",
+                            Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getActivity().getApplicationContext(), "Saving FAILED!", Toast.LENGTH_SHORT)
+                            .show();
+
+                if (mChart2.saveToGallery("title" + System.currentTimeMillis(), 50)) {
                     Toast.makeText(getActivity().getApplicationContext(), "Saving SUCCESSFUL!",
                             Toast.LENGTH_SHORT).show();
                 } else
@@ -318,67 +424,104 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
     private void setData(int cnt) {
 
-/*        tvX.setText("" + (mSeekBarX.getProgress() + 1));
-        tvY.setText("" + (mSeekBarY.getProgress()));
+
+        int[] values = {40, 60, 80, 20};
+        double[] values1 = {0.42135, 0.58423};
+        double[] values2 = {0.78423, 0.22135};
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+        ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < mSeekBarX.getProgress() + 1; i++) {
-            float mult = (mSeekBarY.getProgress() + 1);
-            float val = (float) (Math.random() * mult) + mult / 3;
-            yVals1.add(new BarEntry(i, val));
+        for (int i = 0; i < cnt; i++) {
+            //float mult = (mSeekBarY.getProgress() + 1);
+            float val1 = (float) ((values1[i] * 70)+30);
+            float val2 = (float) ((values2[i] * 70)+30);
+            yVals1.add(new BarEntry(i+1, val1));
+            yVals2.add(new BarEntry(i+1, val2));
         }
 
-        BarDataSet set1;
+        BarDataSet set1, set2;
 
-        if (mChart.getData() != null &&
-                mChart.getData().getDataSetCount() > 0) {
-            set1 = (BarDataSet)mChart.getData().getDataSetByIndex(0);
+        if (mChart1.getData() != null &&
+                mChart1.getData().getDataSetCount() > 0) {
+            set1 = (BarDataSet)mChart1.getData().getDataSetByIndex(0);
             set1.setValues(yVals1);
-            mChart.getData().notifyDataChanged();
-            mChart.notifyDataSetChanged();
+            mChart1.getData().notifyDataChanged();
+            mChart1.notifyDataSetChanged();
         } else {
             set1 = new BarDataSet(yVals1, "Data Set");
             set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
             set1.setDrawValues(false);
 
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set1);
+            ArrayList<IBarDataSet> dataSets1 = new ArrayList<IBarDataSet>();
+            dataSets1.add(set1);
 
-            BarData data = new BarData(dataSets);
-            mChart.setData(data);
-            mChart.setFitBars(true);
+            BarData data1 = new BarData(dataSets1);
+            mChart1.setData(data1);
+            mChart1.setFitBars(true);
         }
 
-        mChart.invalidate();*/
+        mChart1.invalidate();
 
-        float groupSpace = 0.1f;
+        if (mChart2.getData() != null &&
+                mChart2.getData().getDataSetCount() > 0) {
+            set2 = (BarDataSet)mChart2.getData().getDataSetByIndex(0);
+            set2.setValues(yVals2);
+            mChart2.getData().notifyDataChanged();
+            mChart2.notifyDataSetChanged();
+        } else {
+            set2 = new BarDataSet(yVals2, "Data Set");
+            set2.setColors(ColorTemplate.VORDIPLOM_COLORS);
+            set2.setDrawValues(false);
+
+            ArrayList<IBarDataSet> dataSets2 = new ArrayList<IBarDataSet>();
+            dataSets2.add(set2);
+
+            BarData data2 = new BarData(dataSets2);
+            mChart2.setData(data2);
+            mChart2.setFitBars(true);
+        }
+
+        mChart2.invalidate();
+
+
+
+
+
+/*        float groupSpace = 0.1f;
         float barSpace = 0.05f; // x4 DataSet
         float barWidth = 0.4f; // x4 DataSet
         // (0.2 + 0.03) * 4 + 0.08 = 1.00 -> interval per "group"
 
+
         int[] values = {40, 60, 80, 20};
         double[] values1 = {0.42135, 0.58423, 0.78423, 0.22135};
+
+        if(values1[0] > values1[2]){
+            tvText.setText("권영호님이 박주혜님보다 긍정요소가 많았습니다.");
+        }else if(values1[0] < values1[2]) {
+            tvText.setText("박주혜님이 권영호님보다 긍정요소가 많았습니다.");
+        }else if(values1[0] == values1[2]) {
+            tvText.setText("박주혜님과 권영호님, 모두 긍정적입니다.");
+        }
 
         int groupCount = 2;
         int startYear = 0;
         int endYear = startYear + groupCount;
-/*
-        tvX.setText(startYear + "-" + endYear);
-        tvY.setText("" + (mSeekBarY.getProgress()));*/
+
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
-/*        ArrayList<BarEntry> yVals3 = new ArrayList<BarEntry>();
-        ArrayList<BarEntry> yVals4 = new ArrayList<BarEntry>();*/
+        ArrayList<BarEntry> yVals3 = new ArrayList<BarEntry>();
+        ArrayList<BarEntry> yVals4 = new ArrayList<BarEntry>();
 
-/*        float randomMultiplier = mSeekBarY.getProgress() * 100000f;*/
+*//*        float randomMultiplier = mSeekBarY.getProgress() * 100000f;*//*
 
         for (int i = 0; i < cnt; i++) {
             yVals1.add(new BarEntry(i, (float)Math.round(values1[i] * 100)));
             yVals2.add(new BarEntry(i, (float)Math.round(values1[i + 2] * 100)));
-/*            yVals3.add(new BarEntry(i, (float) (Math.random() * randomMultiplier)));
-            yVals4.add(new BarEntry(i, (float) (Math.random() * randomMultiplier)));*/
+            yVals3.add(new BarEntry(i, (float) (Math.random() * randomMultiplier)));
+            yVals4.add(new BarEntry(i, (float) (Math.random() * randomMultiplier)));
         }
 
         BarDataSet set1, set2, set3, set4;
@@ -387,12 +530,12 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
             set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
             set2 = (BarDataSet) mChart.getData().getDataSetByIndex(1);
-/*            set3 = (BarDataSet) mChart.getData().getDataSetByIndex(2);
-            set4 = (BarDataSet) mChart.getData().getDataSetByIndex(3);*/
+            set3 = (BarDataSet) mChart.getData().getDataSetByIndex(2);
+            set4 = (BarDataSet) mChart.getData().getDataSetByIndex(3);
             set1.setValues(yVals1);
             set2.setValues(yVals2);
-/*            set3.setValues(yVals3);
-            set4.setValues(yVals4);*/
+            set3.setValues(yVals3);
+            set4.setValues(yVals4);
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
 
@@ -402,10 +545,10 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
             set1.setColor(Color.rgb(104, 241, 175));
             set2 = new BarDataSet(yVals2, "부정");
             set2.setColor(Color.rgb(164, 228, 251));
-/*            set3 = new BarDataSet(yVals3, "Company C");
+            set3 = new BarDataSet(yVals3, "Company C");
             set3.setColor(Color.rgb(242, 247, 158));
             set4 = new BarDataSet(yVals4, "Company D");
-            set4.setColor(Color.rgb(255, 102, 0));*/
+            set4.setColor(Color.rgb(255, 102, 0));
 
             BarData data = new BarData(set1, set2);
             data.setValueFormatter(new LargeValueFormatter());
@@ -423,7 +566,7 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
         // barData.getGroupWith(...) is a helper that calculates the width each group needs based on the provided parameters
         mChart.getXAxis().setAxisMaximum(startYear + mChart.getBarData().getGroupWidth(groupSpace, barSpace) * groupCount);
         mChart.groupBars(startYear, groupSpace, barSpace);
-        mChart.invalidate();
+        mChart.invalidate();*/
     }
 
 
