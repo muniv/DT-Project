@@ -1,8 +1,11 @@
 package com.muni.examples.aibrilcall;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -13,10 +16,14 @@ import android.speech.SpeechRecognizer;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -43,13 +50,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
 
         ListView listview ;
         ListViewAdapter adapter;
@@ -97,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }, PhoneStateListener.LISTEN_CALL_STATE);
     }
+
 
     PermissionListener permissionListener = new PermissionListener()
     {
@@ -159,10 +168,10 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 // 서버 응답변수 reader 에서 내용을 라인단위 문자열 변수 Content 를 화면 UI uiUpdate=output객체에 뿌려줌.
                 //uiUpdate.setText( Content );
-                /****************** JSON Data 파싱 *************/
+                // JSON Data 파싱
                 JSONObject jsonResponse;
                 try {
-                    /****** 문자열 Content변수내용을 JSON Object로 생성 ********/
+                    // 문자열 Content변수내용을 JSON Object로 생성
                     jsonResponse = new JSONObject(Content);
 
                     // JSONArray에서 항목 이름으로 결과 값 조회
@@ -175,10 +184,10 @@ public class MainActivity extends AppCompatActivity {
                     // listview.setAdapter(adapter) ;
                     for(int i=0; i < lengthJsonArr; i++)
                     {
-                        /****** JSON node에서 데이터를 얻어옴***********/
+                        // JSON node에서 데이터를 얻어옴
                         JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
 
-                        /******* 노드 밸류에서 값을 얻어옴**********/
+                        // 노드 밸류에서 값을 얻어옴
                         String name       = jsonChildNode.optString("name").toString();
                         String phone     = jsonChildNode.optString("phone").toString();
 
@@ -187,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     }
-                    /****************** JSON Data parsing 완료 *************/
+                    // JSON Data parsing 완료
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -195,3 +204,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+

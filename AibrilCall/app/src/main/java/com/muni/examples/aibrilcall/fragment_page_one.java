@@ -358,15 +358,8 @@ public class fragment_page_one extends Fragment implements OnChartValueSelectedL
 
 
         int[] values = {40, 60, 80, 20};
-        double[] values1 = {0.42135, 0.58423, 0.78423, 0.22135};
-
-        if(values1[0] > values1[2]){
-            tvText.setText("권영호님이 박주혜님보다 긍정요소가 많았습니다.");
-        }else if(values1[0] < values1[2]) {
-            tvText.setText("박주혜님이 권영호님보다 긍정요소가 많았습니다.");
-        }else if(values1[0] == values1[2]) {
-            tvText.setText("박주혜님과 권영호님, 모두 긍정적입니다.");
-        }
+        double[] values1 = {0.78423, 0.22135, 0.42135,0.58423}; //영호
+      //  double[] values1 = {0.42135,0.58423,0.78423, 0.22135 }; //주혜
 
         int groupCount = 2;
         int startYear = 0;
